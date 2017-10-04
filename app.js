@@ -9,11 +9,12 @@ GAME RULES:
 
 */
 
-var scores, roundScore, activePlayer;
+var scores, roundScore, activePlayer, gamePlaying;
 
 init();
 
 function init() {
+  gamePlaying = true;
   scores = [0,0];
   roundScore = 0;
   activePlayer = 0;
@@ -40,6 +41,7 @@ function init() {
 
 // When someone clicks the 'roll' button
 document.querySelector('.btn-roll').addEventListener('click', function() {
+  if(gamePlaying) {
     // 1. Generate a random number
     var dice = Math.floor(Math.random() * 6) + 1;
 
@@ -57,26 +59,29 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
       //next player
       nextPlayer();
     }
-  });
+  }
+});
 
   document.querySelector('.btn-hold').addEventListener('click', function() {
-    // Add current score to global score
-    scores[activePlayer] += roundScore;
+    if(gamePlaying) {
+      // Add current score to global score
+      scores[activePlayer] += roundScore;
 
-    // Update UI
-    document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
+      // Update UI
+      document.querySelector('#score-' + activePlayer).textContent = scores[activePlayer];
 
-    // Check if player has won the game
-    if (scores[activePlayer] >= 100) {
-      document.querySelector('#name-' + activePlayer).textContent = "Winner!";
-      document.querySelector('.dice').style.display = 'none';
-      document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
-      document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
-    } else {
-      nextPlayer();
+      // Check if player has won the game
+      if (scores[activePlayer] >= 20) {
+        document.querySelector('#name-' + activePlayer).textContent = "Winner!";
+        document.querySelector('.dice').style.display = 'none';
+        document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
+        document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+        gamePlaying = false;
+      } else {
+        nextPlayer();
+      }
     }
-
-  });
+});
 
   document.querySelector('.btn-new').addEventListener('click', init);
 
